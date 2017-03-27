@@ -41,6 +41,63 @@ $(document).ready(function(){
 		$('#encryptionAPI div#EncryptionWarning').toggleClass('hidden');
 	});
 
+	function selectEncryptionBehavior() {
+		$('#confirm-encryption-warning').addClass("hidden");
+		$('#encryptionAPI').addClass("hidden");
+		$('#ocDefaultEncryptionModule').addClass("hidden");
+		$('#encryptHomeStorage').removeAttr("checked",false);
+	}
+
+	function masterkeyEncryptionSelected() {
+		$('#confirm-encryption-warning').removeClass("hidden");
+		$('#encryptionAPI').addClass("hidden");
+		$('#ocDefaultEncryptionModule').addClass("hidden");
+		$('#encryptHomeStorage').removeAttr("checked", false);
+		$('#enableEncryption').removeAttr("checked", false);
+		$('#OC_DEFAULT_MODULE').removeAttr("checked", false);
+		$('#enableEncryption').removeAttr("disabled", false);
+	}
+
+	function userSpecificEncryptionSelected() {
+		$('#encryptHomeStorage').attr("checked","checked");
+		$('#confirm-encryption-warning').addClass("hidden");
+		$('#encryptionAPI').removeClass("hidden");
+		$('#ocDefaultEncryptionModule').removeClass("hidden");
+	}
+
+	if ($('#keyTypeId :selected').val() == "nokey") {
+		selectEncryptionBehavior();
+	} else if ($('#keyTypeId :selected').val() == "masterkey") {
+		masterkeyEncryptionSelected();
+		$('#confirm-encryption-warning').addClass("hidden");
+	}
+
+	if ($('#enableEncryption').prop("checked") == true) {
+		$('#keyTypeId option[value="customkey"]').attr("selected", "selected");
+		$('#confirm-encryption-warning').removeClass("hidden");
+		userSpecificEncryptionSelected();
+	}
+
+	$('#keyTypeId').change(function (element) {
+		console.log("The value selected is = ", $('#keyTypeId option:selected').val() );
+		if($('#keyTypeId :selected').val() == "nokey") {
+			selectEncryptionBehavior();
+		} else if ($('#keyTypeId :selected').val() == "masterkey") {
+			$('#keyTypeId').removeAttr("selected");
+			$('#keyTypeId :selected').attr('selected', true);
+			masterkeyEncryptionSelected();
+		} else  {
+			userSpecificEncryptionSelected();
+		}
+	});
+
+	$('#reconfirm-encryption-type').click(function (event) {
+		if ($('#keyTypeId option:selected').val() == 'masterkey') {
+			OC.AppConfig.setValue('encryption', 'useMasterKey', '1');
+			location.reload();
+		}
+	});
+
 	$('#reallyEnableEncryption').click(function() {
 		$('#encryptionAPI div#EncryptionWarning').toggleClass('hidden');
 		$('#encryptionAPI div#EncryptionSettingsArea').toggleClass('hidden');
