@@ -37,6 +37,11 @@
  *
  */
 
+if (OC_User::getUser() === null) {
+	header('HTTP/1.0 401 Unauthorized');
+	return;
+}
+
 // Set the content type to Javascript
 header("Content-type: text/javascript");
 
