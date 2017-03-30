@@ -69,7 +69,8 @@ class DBConfigService {
 		$builder = $this->connection->getQueryBuilder();
 		$query = $builder->select(['mount_id', 'mount_point', 'storage_backend', 'auth_backend', 'priority', 'type'])
 			->from('external_mounts', 'm')
-			->where($builder->expr()->eq('mount_id', $builder->createNamedParameter($mountId, IQueryBuilder::PARAM_INT)));
+			->where($builder->expr()->eq('mount_id', $builder->createNamedParameter($mountId, IQueryBuilder::PARAM_INT)))
+			->orderBy('mount_id');
 		$mounts = $this->getMountsFromQuery($query);
 		if (count($mounts) > 0) {
 			return $mounts[0];
